@@ -1,0 +1,100 @@
+[
+  {
+    "student": {
+      "id": 1,
+      "name": "홍길동",
+      "student_id": "2021001",
+      "api_url": "http://localhost:8000",
+      "active": true
+    },
+    "total": 6,
+    "success": 6,
+    "failed": 0,
+    "details": [
+      {
+        "image": "20240817_000105.jpg",
+        "status": "✓",
+        "result": {
+          "success": true,
+          "status_code": 200,
+          "data": {
+            "success": true,
+            "message": "이미지 업로드 완료",
+            "filename": "20251225_185148_578356_20240817_000105.jpg",
+            "queue_size": 0
+          }
+        }
+      },
+      {
+        "image": "20240817_000108.jpg",
+        "status": "✓",
+        "result": {
+          "success": true,
+          "status_code": 200,
+          "data": {
+            "success": true,
+            "message": "이미지 업로드 완료",
+            "filename": "20251225_185149_105373_20240817_000108.jpg",
+            "queue_size": 1
+          }
+        }
+      },
+      {
+        "image": "20240817_000116.jpg",
+        "status": "✓",
+        "result": {
+          "success": true,
+          "status_code": 200,
+          "data": {
+            "success": true,
+            "message": "이미지 업로드 완료",
+            "filename": "20251225_185149_635044_20240817_000116.jpg",
+            "queue_size": 1
+          }
+        }
+      },
+      {
+        "image": "20240817_001419.jpg",
+        "status": "✓",
+        "result": {
+          "success": true,
+          "status_code": 200,
+          "data": {
+            "success": true,
+            "message": "이미지 업로드 완료",
+            "filename": "20251225_185150_159944_20240817_001419.jpg",
+            "queue_size": 1
+          }
+        }
+      },
+      {
+        "image": "20240817_001425.jpg",
+        "status": "✓",
+        "result": {
+          "success": true,
+          "status_code": 200,
+          "data": {
+            "success": true,
+            "message": "이미지 업로드 완료",
+            "filename": "20251225_185150_686089_20240817_001425.jpg",
+            "queue_size": 2
+          }
+        }
+      },
+      {
+        "image": "20240817_001438.jpg",
+        "status": "✓",
+        "result": {
+          "success": true,
+          "status_code": 200,
+          "data": {
+            "success": true,
+            "message": "이미지 업로드 완료",
+            "filename": "20251225_185151_214420_20240817_001438.jpg",
+            "queue_size": 3
+          }
+        }
+      }
+    ]
+  }
+]
