@@ -85,6 +85,7 @@ def main():
     ap.add_argument("--image_dir", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--model", default="Qwen/Qwen2-VL-7B-Instruct")
+    ap.add_argument("--load_4bit", action="store_true", help="Load model in 4bit to reduce VRAM")
     args = ap.parse_args()
 
     image_dir = Path(args.image_dir)
@@ -96,13 +97,23 @@ def main():
     if not images:
         raise SystemExit(f"No images found under: {image_dir}")
 
-    from transformers import Qwen2VLForConditionalGeneration
+    from transformers import Qwen2VLForConditionalGeneration, BitsAndBytesConfig
 
     processor = AutoProcessor.from_pretrained(args.model)
+    quant_cfg = None
+    if args.load_4bit:
+        quant_cfg = BitsAndBytesConfig(
+            load_in_4bit=True,
+            bnb_4bit_quant_type="nf4",
+            bnb_4bit_use_double_quant=True,
+            bnb_4bit_compute_dtype=torch.bfloat16,
+        )
+
     model = Qwen2VLForConditionalGeneration.from_pretrained(
         args.model,
         torch_dtype=torch.bfloat16,
         device_map="auto",
+        quantization_config=quant_cfg,
     )
     model.eval()
 
@@ -155,4 +166,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

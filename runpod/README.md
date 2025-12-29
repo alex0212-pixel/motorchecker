@@ -105,7 +105,14 @@ tmux attach -t train
 
 ```bash
 source .venv/bin/activate
-python runpod/pseudo_label_qwen2vl.py --image_dir data/motor_checker --out runpod/labels.auto.csv
+python runpod/pseudo_label_qwen2vl.py --load_4bit --image_dir data/motor_checker --out runpod/labels.auto.csv
+```
+
+만약 그래도 VRAM이 부족하면(Out of memory):
+
+```bash
+# 더 작은 모델로 pseudo-label (예: 2B/3B 계열이 있다면 그걸 사용)
+python runpod/pseudo_label_qwen2vl.py --load_4bit --model <SMALLER_MODEL_ID> --image_dir data/motor_checker --out runpod/labels.auto.csv
 ```
 
 1) `runpod/labels.auto.csv`를 열어서
