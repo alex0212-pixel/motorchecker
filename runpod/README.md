@@ -154,6 +154,27 @@ python runpod/make_train_jsonl.py --labels_csv runpod/labels.csv --out train.jso
 ### (B) 모델
 - 기본값: `Qwen/Qwen2-VL-7B-Instruct`
 
+#### VRAM 부족(OOM)이 나면 모델을 바꾸세요(강력 추천)
+
+공용 GPU 환경에서는 7B도 QLoRA로 학습하다가 OOM이 날 수 있습니다.
+그럴 때는 먼저 **더 작은 Qwen2-VL 모델(예: 2B)** 로 바꾸는 게 가장 확실합니다.
+
+예시:
+
+```bash
+# 학습 모델 바꾸기(예: 2B)
+export MODEL_NAME=Qwen/Qwen2-VL-2B-Instruct
+
+# (merge 업로드를 할 경우에만) BASE_MODEL도 같은 걸로
+export BASE_MODEL=Qwen/Qwen2-VL-2B-Instruct
+```
+
+그리고 평소처럼:
+
+```bash
+bash runpod/train_qwen2vl_lora.sh
+```
+
 ---
 
 ## 2) 결과물(어디에 저장되나)
