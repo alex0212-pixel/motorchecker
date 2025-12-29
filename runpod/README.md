@@ -98,6 +98,22 @@ tmux attach -t train
 
 #### (A-1) 라벨이 아직 없다면(권장 워크플로우)
 
+> 결론: 전부 수작업으로 라벨링하는 방식은 비추천입니다.
+> 먼저 base 모델로 **자동 라벨링(pseudo-label)** 을 하고, 사람이 틀린 것만 빠르게 고치는 방식이 가장 빠릅니다.
+
+0) (권장) 자동 라벨링(pseudo-label)로 초안 만들기
+
+```bash
+source .venv/bin/activate
+python runpod/pseudo_label_qwen2vl.py --image_dir data/motor_checker --out runpod/labels.auto.csv
+```
+
+1) `runpod/labels.auto.csv`를 열어서
+- `has_sticker/color/number`가 틀린 행만 수정
+- 잘 모르겠는 행은 `raw` 컬럼(모델 원문 출력)을 보고 판단
+
+2) 수정한 파일을 `runpod/labels.csv`로 저장(또는 `--labels_csv`에 그대로 사용)
+
 1) 라벨 템플릿 CSV 생성
 
 ```bash

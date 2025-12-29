@@ -32,7 +32,8 @@ python -m pip install -U \
   "pillow>=10.0.0" \
   "tqdm>=4.66.0" \
   "albumentations>=1.4.0" \
-  "opencv-python-headless>=4.10.0.84"
+  "opencv-python-headless>=4.10.0.84" \
+  "pandas>=2.0.0"
 
 echo "[OK] Environment ready."
 python -c "import torch; print('torch', torch.__version__, 'cuda?', torch.cuda.is_available())"
