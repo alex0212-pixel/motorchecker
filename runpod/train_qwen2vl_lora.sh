@@ -7,6 +7,9 @@ cd "$ROOT_DIR"
 
 source .venv/bin/activate
 
+# ensure local package imports (runpod.*) work even when launched via accelerate
+export PYTHONPATH="${PYTHONPATH:-$ROOT_DIR}"
+
 # 사용자별 출력 경로 자동 설정(공용 workspace에서 덮어쓰기 방지)
 source runpod/user_paths.sh
 

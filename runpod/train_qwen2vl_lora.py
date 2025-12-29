@@ -13,6 +13,7 @@
 """
 
 import os
+import sys
 from dataclasses import dataclass
 from typing import Any, Dict, List
 
@@ -27,7 +28,15 @@ from transformers import (
 )
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 
-from runpod.augment import AugmentConfig, augment_pil
+try:
+    # When running via `accelerate launch runpod/train_qwen2vl_lora.py`,
+    # python may not include repo root in sys.path depending on working dir.
+    from runpod.augment import AugmentConfig, augment_pil
+except ModuleNotFoundError:
+    repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    if repo_root not in sys.path:
+        sys.path.insert(0, repo_root)
+    from runpod.augment import AugmentConfig, augment_pil
 
 
 def env_bool(name: str, default: bool) -> bool:
