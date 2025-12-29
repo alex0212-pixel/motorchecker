@@ -37,21 +37,45 @@ def _require(name: str) -> str:
     return v
 
 
-def push_adapter_only(repo_id: str, token: str, adapter_dir: str):
+def push_adapter_only(repo_id: str, token: str, adapter_dir: str, base_model: str):
     from huggingface_hub import HfApi
 
     api = HfApi(token=token)
     api.create_repo(repo_id, exist_ok=True, repo_type="model")
     print(f"[OK] repo ready: {repo_id}")
 
-    # Upload the directory as-is
-    api.upload_folder(
-        repo_id=repo_id,
-        repo_type="model",
-        folder_path=adapter_dir,
-        path_in_repo=".",
-        commit_message="upload lora adapter",
-    )
+    # HF Hub validates model card metadata for adapter repos.
+    # If README.md has an empty `base_model:` field, upload fails (400 validate-yaml).
+    # We always create a minimal README.md with a valid base_model.
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp = os.path.abspath(tmp)
+        print(f"[INFO] preparing upload dir: {tmp}")
+        shutil.copytree(adapter_dir, tmp, dirs_exist_ok=True)
+
+        readme_path = os.path.join(tmp, "README.md")
+        with open(readme_path, "w", encoding="utf-8") as f:
+            f.write(
+                "---\n"
+                f"base_model: {base_model}\n"
+                "library_name: peft\n"
+                "tags:\n"
+                "  - peft\n"
+                "  - lora\n"
+                "  - qwen2-vl\n"
+                "---\n\n"
+                "# MotorChecker Qwen2-VL LoRA Adapter\n\n"
+                "This repository contains a LoRA adapter trained for motor sticker detection (has_sticker/color/number).\n\n"
+                "## How to use\n\n"
+                "Load the base model + this adapter using PEFT (PeftModel).\n"
+            )
+
+        api.upload_folder(
+            repo_id=repo_id,
+            repo_type="model",
+            folder_path=tmp,
+            path_in_repo=".",
+            commit_message="upload lora adapter",
+        )
     print(f"[OK] uploaded adapter dir: {adapter_dir}")
 
 
@@ -110,11 +134,10 @@ def main():
         raise SystemExit("MODE must be 'adapter' or 'merged'")
 
     if mode == "adapter":
-        push_adapter_only(repo_id=repo_id, token=token, adapter_dir=adapter_dir)
+        push_adapter_only(repo_id=repo_id, token=token, adapter_dir=adapter_dir, base_model=base_model)
     else:
         push_merged_model(repo_id=repo_id, token=token, base_model=base_model, adapter_dir=adapter_dir)
 
 
 if __name__ == "__main__":
     main()
-
