@@ -71,9 +71,14 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--labels_csv", required=True)
     ap.add_argument("--out", required=True)
-    ap.add_argument("--image_root", default="/workspace")
+    # default to current working directory so it works for /workspace/<repo>
+    ap.add_argument("--image_root", default=None)
     ap.add_argument("--question", default=DEFAULT_QUESTION)
     args = ap.parse_args()
+
+    if args.image_root is None:
+        # Use current working directory by default
+        args.image_root = str(Path.cwd())
 
     labels_csv = Path(args.labels_csv)
     out = Path(args.out)
@@ -122,4 +127,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

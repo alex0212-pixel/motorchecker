@@ -137,7 +137,8 @@ python runpod/make_label_template.py --image_dir data/motor_checker --out runpod
 3) 학습용 JSONL 생성
 
 ```bash
-python runpod/make_train_jsonl.py --labels_csv runpod/labels.csv --out train.jsonl --image_root /workspace
+cd /workspace/<YOUR_REPO_NAME>
+python runpod/make_train_jsonl.py --labels_csv runpod/labels.csv --out train.jsonl
 ```
 
 4) RunPod에서 학습 실행 시 `TRAIN_JSONL=/workspace/train.jsonl` 로 지정
