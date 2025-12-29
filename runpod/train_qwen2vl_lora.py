@@ -69,8 +69,20 @@ def preprocess_example(processor: Any, ex: Dict[str, Any]) -> Dict[str, Any]:
     question = ex.get("question", "")
     answer = ex.get("answer", "")
 
-    messages = build_messages(image_path, question, answer)
-    text = processor.apply_chat_template(messages, tokenize=False, add_generation_prompt=False)
+    # We will train ONLY on assistant answer tokens.
+    # To do that, we build the prompt with a generation marker, then append the answer.
+    # This makes masking reliable.
+    user_messages = [
+        {
+            "role": "user",
+            "content": [
+                {"type": "image", "image": image_path},
+                {"type": "text", "text": question},
+            ],
+        }
+    ]
+    prompt = processor.apply_chat_template(user_messages, tokenize=False, add_generation_prompt=True)
+    text = prompt + (answer or "")
     image = load_image(image_path)
     # on-the-fly augmentation to make model robust to rotation/warp
     if env_bool("AUGMENT", True):
@@ -88,7 +100,14 @@ def preprocess_example(processor: Any, ex: Dict[str, Any]) -> Dict[str, Any]:
         padding=True,
     )
 
+    # Mask everything except the assistant answer tokens.
+    # Find where the answer starts by tokenizing the prompt alone.
+    prompt_ids = processor.tokenizer(prompt, add_special_tokens=False).input_ids
+    start = len(prompt_ids)
+
     labels = inputs["input_ids"].clone()
+    labels[:, :start] = -100
+
     pad_id = processor.tokenizer.pad_token_id
     if pad_id is not None:
         labels[labels == pad_id] = -100
